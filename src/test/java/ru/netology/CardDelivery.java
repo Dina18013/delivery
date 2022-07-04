@@ -3,6 +3,7 @@ package ru.netology;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.Keys;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -14,14 +15,11 @@ import static java.time.Duration.ofSeconds;
 
 public class CardDelivery {
 
-    public String nextDate(int days) {
-        LocalDate parsedDate = LocalDate.now();
-        LocalDate addedDate = parsedDate.plusDays(days);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        return addedDate.format(formatter);
+    public String generateDate(int days) {
+        return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
-    String planningDate = nextDate(7);
+    String planningDate = generateDate(7);
     SelenideElement notification = $x("//div[@data-test-id='notification']");
 
 
@@ -33,7 +31,8 @@ public class CardDelivery {
     @Test
     public void ShouldCardDelivery() {
         $x(".//span[@data-test-id='city']//input").setValue("Москва");
-        $x(".//span[@data-test-id=date]//input").doubleClick().sendKeys(planningDate);
+        $("[data-test-id='date'] input").sendKeys(Keys.chord(Keys.SHIFT,Keys.HOME),Keys.BACK_SPACE);
+        $("[data-test-id='date'] input").setValue(planningDate);
         $x(".//span[@data-test-id='name']//input").setValue("Иванов Виктор");
         $x(".//span[@data-test-id='phone']//input").setValue("+79101234567");
         $x(".//label[@data-test-id='agreement']").click();
